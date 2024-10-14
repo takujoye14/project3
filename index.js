@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const port = 3000;
 const usersRouter = require("./routes/users.js")
+
+
 app.use("/api/", usersRouter)
 
 app.use(express.json());
