@@ -1,11 +1,22 @@
 const db = require("../database")
 
+// GET all users from the database
 exports.getAllUsers = function (req, res) {
 	db.all("SELECT * FROM users", [], (err, rows) => {
 		if (err) {
 			res.status(500).json({ error: err.message })
-		} else {
-			res.json(rows)
+		}
+		{
+			// Append new property to each user
+			const updatedRows = rows.map((user) => ({
+				...user,
+				// profileImg: `https://api.multiavatar.com/${user.firstName}.svg`, // dynamic picture
+				//  profileImg: `https://robohash.org/${user.firstName}.png`, // dynamic picture
+				profileImg: `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}`,
+			}))
+			// you can choose whatever profile API you prefer
+
+			res.json(updatedRows)
 		}
 	})
 }
@@ -35,13 +46,13 @@ exports.createNewUser = (req, res) => {
 			if (err) {
 				res.status(500).json({ error: err.message })
 			} else {
-				res.status(201).json({ id: this.lastID, firstName })
+				res.status(201).json({ id: this.lastID, firstName, lastName})
 			}
 		}
 	)
 }
 
-// POST update a user based on its ID
+// PUT update a user based on its ID
 exports.updateUser = (req, res) => {
 	const { firstName, lastName } = req.body
 
